@@ -15,12 +15,12 @@ const AIInsights = ({ token }) => {
     setError("");
     setInsights("");
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/ai/insights",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const API_URL = process.env.VITE_API_URL || "http://localhost:5000";
+
+      const response = await axios.get(`${API_URL}/api/ai/insights`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setInsights(response.data.insights);
     } catch (err) {
       setError(

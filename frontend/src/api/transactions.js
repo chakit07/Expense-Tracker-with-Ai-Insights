@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/transactions';
+const API_URL = 'https://expense-tracker-with-ai-insights-backend.onrender.com/api/transactions';
 
 // Create an Axios instance for API calls
 const api = axios.create({

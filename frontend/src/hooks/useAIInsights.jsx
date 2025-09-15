@@ -15,11 +15,14 @@ const useAIInsights = (token) => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.get("http://localhost:5000/api/ai/insights", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+      const res = await axios.get(`${API_URL}/api/ai/insights`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       setInsights(res.data.insights);
     } catch (err) {
       console.error("AI Insights fetch error:", err);
