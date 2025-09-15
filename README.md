@@ -90,5 +90,5 @@ This project is an Expense Tracker application with a frontend built using React
 
 ## Contact
 
-For any questions or issues, please contact the project maintainer-ChakitSharma7@gmail.com
+For any questions or issues, please contact the project maintainer:: ChakitSharma7@gmail.com
 "# Expense-Tracker-with-Ai-Insights" 
