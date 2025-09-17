@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   getIdToken,
   GoogleAuthProvider,
@@ -33,17 +32,6 @@ export const AuthProvider = ({ children }) => {
       const idToken = await result.user.getIdToken();
       setToken(idToken);
       setUser(result.user);
-
-      // Optional: notify backend login
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        }
-      );
     } catch (error) {
       console.error("Login error:", error);
       throw error;
