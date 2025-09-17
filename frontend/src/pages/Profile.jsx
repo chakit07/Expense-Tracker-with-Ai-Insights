@@ -26,27 +26,27 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-2xl mx-auto p-4 sm:p-6">
       {/* Header */}
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900 dark:text-white">
         Profile
       </h1>
 
       {/* Profile Card */}
       <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-1 rounded-2xl shadow-lg transition-all">
-        <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-900 p-4 sm:p-8 rounded-2xl border border-gray-200 dark:border-gray-700">
           {/* User Info */}
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-8">
             <img
               src={user.photoURL || "/default-avatar.png"}
               alt="Profile"
-              className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-md"
+              className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-md"
             />
             <div>
-              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
                 {user.displayName}
               </h2>
-              <p className="text-gray-700 dark:text-gray-400 text-lg mt-1">
+              <p className="text-gray-700 dark:text-gray-400 text-base sm:text-lg mt-1">
                 {user.email}
               </p>
             </div>

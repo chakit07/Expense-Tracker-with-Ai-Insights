@@ -15,7 +15,9 @@ import AIInsights from "../components/AIInsights";
 import BarChartComponent from "../components/charts/BarChartComponent";
 import LineChartComponent from "../components/charts/LineChartComponent";
 import PieChartComponent from "../components/charts/PieChartComponent";
+import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { useTransactions } from "../context/TransactionContext";
 
 const StatCard = ({ title, value, icon: Icon, color, trend }) => (
@@ -64,6 +66,7 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
 const Dashboard = () => {
   const { transactions } = useTransactions();
   const { currentUser } = useAuth();
+  const { theme } = useTheme();
   const [token, setToken] = useState(null);
   const navigate = useNavigate();
 
@@ -96,23 +99,74 @@ const Dashboard = () => {
     };
   }, [transactions]);
 
-  // Monthly data for charts
+  // Monthly data for charts (last 12 months)
   const monthlyData = useMemo(() => {
     const dataByMonth = {};
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setMonth(today.getMonth() - 11); // last 12 months including current
+
     transactions.forEach((t) => {
-      const month = new Date(t.date).toLocaleString("default", {
-        month: "short",
-      });
-      if (!dataByMonth[month]) {
-        dataByMonth[month] = { name: month, income: 0, expense: 0 };
-      }
-      if (t.type === "income") {
-        dataByMonth[month].income += t.amount;
-      } else {
-        dataByMonth[month].expense += t.amount;
+      const date = new Date(t.date);
+      if (date >= startDate && date <= today) {
+        const monthKey = date.toLocaleDateString("en-IN", {
+          month: "short",
+          year: "numeric",
+        });
+        if (!dataByMonth[monthKey]) {
+          dataByMonth[monthKey] = { name: monthKey, income: 0, expense: 0 };
+        }
+        if (t.type === "income") {
+          dataByMonth[monthKey].income += t.amount;
+        } else {
+          dataByMonth[monthKey].expense += t.amount;
+        }
       }
     });
-    return Object.values(dataByMonth);
+
+    // Sort months ascending
+    const sortedMonths = Object.keys(dataByMonth).sort((a, b) => {
+      const dateA = new Date(a);
+      const dateB = new Date(b);
+      return dateA - dateB;
+    });
+
+    return sortedMonths.map((month) => dataByMonth[month]);
+  }, [transactions]);
+
+  // Daily data for line chart (last 30 days)
+  const dailyData = useMemo(() => {
+    const dataByDate = {};
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 29); // last 30 days including today
+
+    transactions.forEach((t) => {
+      const date = new Date(t.date);
+      if (date >= startDate && date <= today) {
+        const dateKey = date.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+        });
+        if (!dataByDate[dateKey]) {
+          dataByDate[dateKey] = { name: dateKey, income: 0, expense: 0 };
+        }
+        if (t.type === "income") {
+          dataByDate[dateKey].income += t.amount;
+        } else {
+          dataByDate[dateKey].expense += t.amount;
+        }
+      }
+    });
+
+    // Sort dates ascending
+    const sortedDates = Object.keys(dataByDate).sort((a, b) => {
+      const dateA = new Date(a + " 2023"); // add year for sorting
+      const dateB = new Date(b + " 2023");
+      return dateA - dateB;
+    });
+
+    return sortedDates.map((date) => dataByDate[date]);
   }, [transactions]);
 
   // Category-wise expenses
@@ -147,28 +201,125 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, y: -40, scale: 0.9, rotate: -5 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotate: 0,
+            transition: {
+              duration: 1.5,
+              ease: "easeOut",
+              staggerChildren: 0.5,
+            },
+          },
+        }}
+        className={`relative overflow-hidden rounded-2xl p-8 shadow-xl ${
+          theme === "light"
+            ? "text-gray-900 animate-sunlight"
+            : "text-white animate-night-sky"
+        }`}
       >
-        <div className="flex items-center justify-between">
+        {/* Subtle shimmer animation */}
+        <motion.div
+          animate={{ x: ["-120%", "120%"], opacity: [0, 0.3, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+          className="absolute top-0 left-0 w-1/2 h-full bg-white transform skew-x-12"
+          style={{ pointerEvents: "none" }}
+        />
+        {/* Floating particles */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1, delayChildren: 0.5 },
+            },
+          }}
+          initial="hidden"
+          animate="visible"
+        >
+          {[...Array(15)].map((_, i) => (
+            <motion.span
+              key={i}
+              className={`absolute rounded-full ${
+                theme === "light" ? "bg-yellow-400" : "bg-yellow-200"
+              }`}
+              style={{
+                width: theme === "light" ? 8 : 4,
+                height: theme === "light" ? 8 : 4,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                filter: "blur(1px)",
+              }}
+              animate={
+                theme === "light"
+                  ? {
+                      y: [0, -15, 0],
+                      opacity: [0.4, 1, 0.4],
+                    }
+                  : {
+                      opacity: [0.2, 1, 0.2, 0.8, 0.2],
+                    }
+              }
+              transition={{
+                repeat: Infinity,
+                duration:
+                  theme === "light"
+                    ? 5 + Math.random() * 2
+                    : 2 + Math.random() * 1,
+                delay: i * 0.2,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+        <div className="flex items-center justify-between relative z-10">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Welcome back!</h1>
-            <p className="text-blue-100 text-lg">
-              Here's your financial overview for{" "}
-              {new Date().toLocaleDateString("en-IN", {
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
+            <motion.h1
+              className="mb-2 text-4xl font-extrabold tracking-wide drop-shadow-lg"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              {transactions.length === 0
+                ? "Welcome to Expense Tracker! Let's start your financial journey."
+                : "Welcome back, ready to conquer your finances?"}
+            </motion.h1>
+            <motion.p
+              className="max-w-md leading-relaxed text-blue-100 text-lg drop-shadow-md"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              {transactions.length === 0
+                ? "Track your expenses, set budgets, and achieve your financial goals with ease. Add your first transaction to get started!"
+                : `Here's your personalized financial snapshot for ${new Date().toLocaleDateString(
+                    "en-IN",
+                    {
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )}. Keep up the great work and keep pushing towards your goals!`}
+            </motion.p>
           </div>
-          <div className="hidden md:block">
-            <Target className="w-16 h-16 text-blue-200 opacity-80" />
-          </div>
+          <motion.div
+            className="hidden md:block"
+            animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+          >
+            <Target className="w-20 h-20 text-blue-300 opacity-90 drop-shadow-lg" />
+          </motion.div>
         </div>
       </motion.div>
 
@@ -236,10 +387,10 @@ const Dashboard = () => {
               <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              Income vs Expenses
+              Daily Income vs Expenses
             </h3>
           </div>
-          <LineChartComponent data={monthlyData} />
+          <LineChartComponent data={dailyData} />
         </motion.div>
 
         <motion.div
@@ -398,6 +549,9 @@ const Dashboard = () => {
 
       {/* ✅ AI Insights now only needs token */}
       {token && <AIInsights token={token} />}
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

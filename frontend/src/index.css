@@ -37,4 +37,84 @@
   .animate-fade-in {
     animation: fade-in 0.3s ease-out;
   }
+
+  @keyframes gradient-x {
+    0%, 100% {
+      background-position: 0% center;
+    }
+    50% {
+      background-position: 100% center;
+    }
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 6s ease infinite;
+  }
+
+  @keyframes color-fade {
+    0% {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+    25% {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    }
+    50% {
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+    }
+    75% {
+      background: linear-gradient(135deg, #f59e0b, #10b981);
+    }
+    100% {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+  }
+
+  .animate-color-fade {
+    animation: color-fade 8s ease-in-out infinite;
+  }
+
+  @keyframes sunlight {
+    0% {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+    25% {
+      background: linear-gradient(135deg, #fcd34d, #fbbf24);
+    }
+    50% {
+      background: linear-gradient(135deg, #fef3c7, #fcd34d);
+    }
+    75% {
+      background: linear-gradient(135deg, #f59e0b, #fef3c7);
+    }
+    100% {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+  }
+
+  .animate-sunlight {
+    animation: sunlight 8s ease-in-out infinite;
+  }
+
+  @keyframes night-sky {
+    0% {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+    }
+    25% {
+      background: linear-gradient(135deg, #334155, #1e293b);
+    }
+    50% {
+      background: linear-gradient(135deg, #475569, #334155);
+    }
+    75% {
+      background: linear-gradient(135deg, #0f172a, #475569);
+    }
+    100% {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+    }
+  }
+
+  .animate-night-sky {
+    animation: night-sky 8s ease-in-out infinite;
+  }
 }

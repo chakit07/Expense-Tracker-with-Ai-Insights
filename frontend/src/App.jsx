@@ -12,7 +12,15 @@ import Profile from "./pages/Profile";
 import Reports from "./pages/Reports";
 import Transactions from "./pages/Transactions";
 
+import { useState } from "react";
+
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     // 2. Wrap everything in ThemeProvider
     <ThemeProvider>
@@ -29,9 +37,12 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <div className="flex h-screen">
-                        <Sidebar />
+                        <Sidebar
+                          isOpen={sidebarOpen}
+                          onToggle={toggleSidebar}
+                        />
                         <div className="flex-1 flex flex-col overflow-hidden">
-                          <Navbar />
+                          <Navbar onToggleSidebar={toggleSidebar} />
                           {/* Also remove dark class from here */}
                           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
                             <div className="container mx-auto px-6 py-8">
@@ -48,9 +59,12 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <div className="flex h-screen">
-                        <Sidebar />
+                        <Sidebar
+                          isOpen={sidebarOpen}
+                          onToggle={toggleSidebar}
+                        />
                         <div className="flex-1 flex flex-col overflow-hidden">
-                          <Navbar />
+                          <Navbar onToggleSidebar={toggleSidebar} />
                           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
                             <div className="container mx-auto px-6 py-8">
                               <Transactions />
@@ -66,9 +80,12 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <div className="flex h-screen">
-                        <Sidebar />
+                        <Sidebar
+                          isOpen={sidebarOpen}
+                          onToggle={toggleSidebar}
+                        />
                         <div className="flex-1 flex flex-col overflow-hidden">
-                          <Navbar />
+                          <Navbar onToggleSidebar={toggleSidebar} />
                           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
                             <div className="container mx-auto px-6 py-8">
                               <Reports />
@@ -84,9 +101,12 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <div className="flex h-screen">
-                        <Sidebar />
+                        <Sidebar
+                          isOpen={sidebarOpen}
+                          onToggle={toggleSidebar}
+                        />
                         <div className="flex-1 flex flex-col overflow-hidden">
-                          <Navbar />
+                          <Navbar onToggleSidebar={toggleSidebar} />
                           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
                             <div className="container mx-auto px-6 py-8">
                               <Profile />

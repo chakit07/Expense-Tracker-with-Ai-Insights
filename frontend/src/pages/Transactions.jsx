@@ -16,8 +16,12 @@ const Transactions = () => {
   const { transactions, deleteTransaction } = useTransactions();
 
   // Separate income and expense transactions
-  const incomeTransactions = transactions.filter((t) => t.type === "income");
-  const expenseTransactions = transactions.filter((t) => t.type === "expense");
+  const incomeTransactions = transactions
+    .filter((t) => t.type === "income")
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  const expenseTransactions = transactions
+    .filter((t) => t.type === "expense")
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   // Handle edit
   const handleEdit = (transaction) => {
@@ -26,82 +30,98 @@ const Transactions = () => {
   };
 
   // Card for each transaction type
-  const renderCard = (title, data, color, Icon, delay = 0) => (
-    <motion.div
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <h2
-          className={`text-lg font-semibold flex items-center gap-2 ${color}`}
-        >
-          <Icon className="w-5 h-5" /> {title}
-        </h2>
-        <span className="text-sm text-gray-500">
-          {data.length} {title.toLowerCase()}
-        </span>
-      </div>
+  const renderCard = (title, data, color, Icon, delay = 0) => {
+    const total = data.reduce((sum, t) => sum + t.amount, 0);
+    return (
+      <motion.div
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2
+            className={`text-lg font-semibold flex items-center gap-2 ${color}`}
+          >
+            <Icon className="w-5 h-5" /> {title}
+          </h2>
+          <span className="text-sm text-gray-500">
+            {data.length} {title.toLowerCase()}
+          </span>
+        </div>
 
-      {data.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400">
-          No {title.toLowerCase()} yet.
-        </p>
-      ) : (
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {data.map((t) => (
-            <motion.li
-              key={t._id || t.id}
-              className="flex items-center justify-between py-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-2 transition"
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-              }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              {/* Left: category + date */}
-              <div className="flex flex-col">
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {t.category}
+        {data.length === 0 ? (
+          <p className="text-gray-500 dark:text-gray-400">
+            No {title.toLowerCase()} yet.
+          </p>
+        ) : (
+          <>
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+              {data.map((t) => (
+                <motion.li
+                  key={t._id || t.id}
+                  className="flex items-center justify-between py-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-2 transition"
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                  }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  {/* Left: category + date */}
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {t.category}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(t.date).toLocaleDateString("en-IN")}
+                    </span>
+                  </div>
+
+                  {/* Right: amount + actions */}
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`font-semibold ${
+                        t.type === "income" ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {t.type === "income" ? "+" : "-"}₹
+                      {t.amount.toLocaleString("en-IN")}
+                    </span>
+
+                    <motion.button
+                      onClick={() => handleEdit(t)}
+                      className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Edit3 className="w-4 h-4 text-blue-500" />
+                    </motion.button>
+                    <motion.button
+                      onClick={() => deleteTransaction(t._id || t.id)}
+                      className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </motion.button>
+                  </div>
+                </motion.li>
+              ))}
+            </ul>
+
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  Total {title.split(" ")[0]}
                 </span>
-                <span className="text-xs text-gray-400">
-                  {new Date(t.date).toLocaleDateString("en-IN")}
+                <span className={`font-bold text-lg ${color}`}>
+                  ₹{total.toLocaleString("en-IN")}
                 </span>
               </div>
-
-              {/* Right: amount + actions */}
-              <div className="flex items-center gap-3">
-                <span
-                  className={`font-semibold ${
-                    t.type === "income" ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {t.type === "income" ? "+" : "-"}₹
-                  {t.amount.toLocaleString("en-IN")}
-                </span>
-
-                <motion.button
-                  onClick={() => handleEdit(t)}
-                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <Edit3 className="w-4 h-4 text-blue-500" />
-                </motion.button>
-                <motion.button
-                  onClick={() => deleteTransaction(t._id || t.id)}
-                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </motion.button>
-              </div>
-            </motion.li>
-          ))}
-        </ul>
-      )}
-    </motion.div>
-  );
+            </div>
+          </>
+        )}
+      </motion.div>
+    );
+  };
 
   return (
     <div className="space-y-6">

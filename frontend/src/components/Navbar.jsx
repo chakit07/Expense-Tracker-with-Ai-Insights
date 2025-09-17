@@ -1,12 +1,10 @@
-// src/components/Navbar.jsx
-
-import { LogOut, Menu, Moon, Sun, User, Wallet, X } from "lucide-react";
+import { LogOut, Menu, Moon, Sun, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -50,13 +48,42 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           {/* Left - Brand */}
           <div className="flex items-center space-x-3">
+            {/* Sidebar toggle button (remains a standard icon) */}
+            <button
+              onClick={onToggleSidebar}
+              className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-all duration-200"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={24} />
+            </button>
             <div className="relative">
-              <Wallet className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-pulse" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-bounce"></div>
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-gray-800 dark:text-gray-200"
+              >
+                <path
+                  d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2m10 0H6m14 0v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6m14 0H6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 10h4"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
             <Link
               to="/"
-              className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-200"
+              className="text-xl font-bold text-gray-900 dark:text-gray-100"
             >
               Expense Tracker
             </Link>
@@ -66,13 +93,16 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-all duration-200 hover:scale-110 hover:rotate-12"
+              className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-colors duration-200"
               aria-label="Toggle theme"
             >
               {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            <div className="flex items-center space-x-3 bg-gray-50 dark:bg-gray-700 rounded-full px-3 py-1">
+            <Link
+              to="/profile"
+              className="flex items-center space-x-3 bg-gray-50 dark:bg-gray-700 rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 cursor-pointer"
+            >
               <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                 Hi, {user?.displayName || user?.email}
               </span>
@@ -80,32 +110,42 @@ const Navbar = () => {
                 <img
                   src={user.photoURL}
                   alt="Avatar"
-                  className="w-8 h-8 rounded-full border-2 border-blue-500 hover:border-purple-500 transition-colors duration-200"
+                  className="w-8 h-8 rounded-full border-2 border-blue-500"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
                   <User size={16} className="text-white" />
                 </div>
               )}
-            </div>
+            </Link>
 
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all duration-200 hover:scale-105 focus:outline-none"
+              className="flex items-center space-x-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors duration-200 focus:outline-none"
             >
               <LogOut size={16} />
               <span>Logout</span>
             </button>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu toggle using the profile image */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition-all duration-200"
+              className="p-1 rounded-full focus:outline-none transition-all duration-200"
               aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="User avatar"
+                  className="w-8 h-8 rounded-full border-2 border-transparent hover:border-blue-500 transition-colors duration-200"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                  <User size={16} className="text-white" />
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -131,6 +171,7 @@ const Navbar = () => {
                 </span>
               </div>
 
+              {/* Theme toggle */}
               <button
                 onClick={toggleTheme}
                 className="flex items-center space-x-3 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
@@ -139,6 +180,7 @@ const Navbar = () => {
                 <span>Toggle Theme</span>
               </button>
 
+              {/* Logout button */}
               <button
                 onClick={handleLogout}
                 className="flex items-center space-x-3 p-3 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"

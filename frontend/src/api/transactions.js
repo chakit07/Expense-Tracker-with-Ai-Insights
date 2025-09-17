@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://expense-tracker-with-ai-insights-backend.onrender.com/api/transactions';
+const API_URL = `${import.meta.env.VITE_API_URL}/api/transactions`;
 
 // Create an Axios instance for API calls
 const api = axios.create({
