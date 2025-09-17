@@ -1,4 +1,8 @@
-# TODO: Add Background Image to Login Page
-
-- [x] Update frontend/src/pages/Login.jsx to add background image styling to the outer div using inline styles with a sample finance-themed image URL, ensuring it covers the screen and positions centrally.
-- [x] Remove background image from frontend/src/pages/Profile.jsx to revert to original styling.
+- [x] Enhance welcome banner animation and design
+  - [x] Add staggered animation for h1 and p text elements
+  - [x] Improve shimmer effect with fade in/out and color changes
+  - [x] Add rotation and glow to the Target icon
+  - [x] Add subtle floating particles background (sun rays in light, blinking stars in dark)
+  - [x] Animate the gradient background with color fading (sunlight in light, night sky in dark)
+  - [x] Theme-aware text colors for clarity
+- [x] Customize welcome message for new vs existing users
