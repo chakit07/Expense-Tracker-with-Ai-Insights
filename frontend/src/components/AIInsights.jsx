@@ -15,7 +15,7 @@ const AIInsights = ({ token }) => {
     setError("");
     setInsights("");
     try {
-      const API_URL = process.env.VITE_API_URL || "http://localhost:5000";
+      const API_URL = process.env.VITE_API_URL;
 
       const response = await axios.get(`${API_URL}/api/ai/insights`, {
         headers: { Authorization: `Bearer ${token}` },
