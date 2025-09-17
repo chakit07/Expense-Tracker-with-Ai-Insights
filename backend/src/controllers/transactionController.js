@@ -15,7 +15,7 @@ const createTransaction = async (req, res) => {
     try {
         const transaction = await Transaction.create({
             ...req.body,
-            userId: req.userId
+            userId: req.userId // Require authenticated userId, no guest fallback
         });
 
         res.status(201).json({ success: true, transaction });

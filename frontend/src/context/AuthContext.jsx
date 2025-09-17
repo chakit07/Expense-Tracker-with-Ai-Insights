@@ -50,19 +50,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    let refreshTokenInterval;
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const idToken = await getIdToken(firebaseUser, true);
         setUser(firebaseUser);
         setToken(idToken);
+
+        // Set interval to refresh token every 30 minutes
+        refreshTokenInterval = setInterval(async () => {
+          const newIdToken = await getIdToken(firebaseUser, true);
+          setToken(newIdToken);
+        }, 30 * 60 * 1000); // 30 minutes
       } else {
         setUser(null);
         setToken(null);
+        if (refreshTokenInterval) {
+          clearInterval(refreshTokenInterval);
+        }
       }
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      if (refreshTokenInterval) {
+        clearInterval(refreshTokenInterval);
+      }
+      unsubscribe();
+    };
   }, []);
 
   const value = {

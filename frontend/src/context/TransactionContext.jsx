@@ -1,3 +1,4 @@
+import { getIdToken } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   addTransactionAPI,
@@ -38,15 +39,26 @@ export const TransactionProvider = ({ children }) => {
   }, [token]);
 
   const addTransaction = async (transaction) => {
-    if (!token) {
-      console.error("Token not available");
+    if (!token || !user) {
+      console.error("Token or user not available");
       return;
     }
     try {
-      const data = await addTransactionAPI(transaction, token);
+      // Refresh token before API call
+      const freshToken = await getIdToken(user, true);
+      const data = await addTransactionAPI(transaction, freshToken);
       setTransactions((prev) => [...prev, data.transaction]);
     } catch (error) {
-      console.error("Failed to add transaction:", error);
+      if (error.response) {
+        console.error(
+          "Failed to add transaction:",
+          error.response.data,
+          "Status:",
+          error.response.status
+        );
+      } else {
+        console.error("Failed to add transaction:", error.message);
+      }
     }
   };
 
