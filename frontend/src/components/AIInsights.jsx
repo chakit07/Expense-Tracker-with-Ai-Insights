@@ -1,46 +1,13 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import useAIInsights from "../hooks/useAIInsights";
 
-const AIInsights = ({ token }) => {
-  const [insights, setInsights] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const fetchInsights = async () => {
-    if (!token) {
-      setError("User not authenticated.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    setInsights("");
-    try {
-      const API_URL = import.meta.env.VITE_API_URL;
-
-      const response = await axios.get(`${API_URL}/api/ai/insights`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setInsights(response.data.insights);
-    } catch (err) {
-      setError(
-        err.response?.data?.error || "Failed to get insights. Please try again."
-      );
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchInsights();
-  }, [token]);
+const AIInsights = () => {
+  const { insights, loading, error, refetch } = useAIInsights();
 
   return (
     <div>
       <button
-        onClick={fetchInsights}
-        disabled={loading || !token}
+        onClick={refetch}
+        disabled={loading}
         className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded disabled:opacity-50 mb-4 transition-colors"
       >
         {loading ? "Analyzing Your Finances..." : "Generate AI Summary"}

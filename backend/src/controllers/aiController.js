@@ -4,7 +4,7 @@ const aiReportTemplate = require('../templates/aiReportTemplate');
 
 // Initialize the Gemini model
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // @desc    Get AI-powered financial insights
 // @route   GET /api/ai/insights
@@ -50,9 +50,9 @@ exports.getFinancialInsights = async (req, res) => {
     `;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    
+    // The result object contains a 'response' with text method
+    const text = result.response.text();
+
     res.status(200).json({ insights: text });
 
   } catch (error) {

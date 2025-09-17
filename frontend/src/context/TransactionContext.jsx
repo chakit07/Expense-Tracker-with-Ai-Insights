@@ -25,9 +25,7 @@ export const TransactionProvider = ({ children }) => {
         return;
       }
       try {
-        const data = await fetchTransactionsAPI({
-          currentUser: { getIdToken: () => token },
-        });
+        const data = await fetchTransactionsAPI(token);
         setTransactions(data.transactions || []);
       } catch (error) {
         console.error("Failed to fetch transactions:", error);
@@ -41,13 +39,11 @@ export const TransactionProvider = ({ children }) => {
 
   const addTransaction = async (transaction) => {
     if (!token) {
-      console.error("User not authenticated");
+      console.error("Token not available");
       return;
     }
     try {
-      const data = await addTransactionAPI(transaction, {
-        currentUser: { getIdToken: () => token },
-      });
+      const data = await addTransactionAPI(transaction, token);
       setTransactions((prev) => [...prev, data.transaction]);
     } catch (error) {
       console.error("Failed to add transaction:", error);
@@ -56,13 +52,11 @@ export const TransactionProvider = ({ children }) => {
 
   const updateTransaction = async (id, transaction) => {
     if (!token) {
-      console.error("User not authenticated");
+      console.error("Token not available");
       return;
     }
     try {
-      const data = await updateTransactionAPI(id, transaction, {
-        currentUser: { getIdToken: () => token },
-      });
+      const data = await updateTransactionAPI(id, transaction, token);
       setTransactions((prev) =>
         prev.map((t) => (t._id === id ? data.transaction : t))
       );
@@ -73,13 +67,11 @@ export const TransactionProvider = ({ children }) => {
 
   const deleteTransaction = async (id) => {
     if (!token) {
-      console.error("User not authenticated");
+      console.error("Token not available");
       return;
     }
     try {
-      await deleteTransactionAPI(id, {
-        currentUser: { getIdToken: () => token },
-      });
+      await deleteTransactionAPI(id, token);
       setTransactions((prev) =>
         prev.filter((t) => t._id !== id && t.id !== id)
       );

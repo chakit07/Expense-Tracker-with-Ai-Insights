@@ -1,20 +1,23 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
-const useAIInsights = (token) => {
+const useAIInsights = () => {
+  const { user } = useAuth();
   const [insights, setInsights] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const fetchInsights = async () => {
-    if (!token) {
-      setError("No auth token found.");
+    if (!user) {
+      setError("No authenticated user found.");
       return;
     }
 
     setLoading(true);
     setError("");
     try {
+      const token = await user.getIdToken();
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
       const res = await axios.get(`${API_URL}/api/ai/insights`, {
@@ -26,7 +29,11 @@ const useAIInsights = (token) => {
       setInsights(res.data.insights);
     } catch (err) {
       console.error("AI Insights fetch error:", err);
-      setError("Failed to fetch AI insights.");
+      if (err.response && err.response.status === 400) {
+        setError(err.response.data.error || "Bad Request");
+      } else {
+        setError("Failed to fetch AI insights.");
+      }
     } finally {
       setLoading(false);
     }

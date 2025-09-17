@@ -1,8 +1,11 @@
-- [x] Enhance welcome banner animation and design
-  - [x] Add staggered animation for h1 and p text elements
-  - [x] Improve shimmer effect with fade in/out and color changes
-  - [x] Add rotation and glow to the Target icon
-  - [x] Add subtle floating particles background (sun rays in light, blinking stars in dark)
-  - [x] Animate the gradient background with color fading (sunlight in light, night sky in dark)
-  - [x] Theme-aware text colors for clarity
-- [x] Customize welcome message for new vs existing users
+# TODO: Add AI Insights Section to Sidebar and Remove from Reports
+
+## Tasks to Complete:
+
+- [x] Create new AIInsightsPage.jsx in frontend/src/pages/
+- [x] Add "AI Insights" menu item to Sidebar.jsx
+- [x] Add new route for /ai-insights in App.jsx
+- [x] Remove AI Insights section from Reports.jsx
+- [x] Test navigation and functionality
+
+## Completed Tasks:

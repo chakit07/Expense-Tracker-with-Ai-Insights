@@ -15,11 +15,11 @@ exports.verifyToken = async (req, res, next) => {
       const decodedToken = await admin.auth().verifyIdToken(token);
 
       // Check if user exists in our DB, if not, create them
-      let user = await User.findOne({ firebaseUid: decodedToken.uid });
+      let user = await User.findOne({ uid: decodedToken.uid });
 
       if (!user) {
         user = await User.create({
-          firebaseUid: decodedToken.uid,
+          uid: decodedToken.uid,
           email: decodedToken.email,
           displayName: decodedToken.displayName || decodedToken.email,
         });
@@ -27,8 +27,8 @@ exports.verifyToken = async (req, res, next) => {
 
       // Attach user object to the request. We use the MongoDB _id.
       req.user = user;
-      // Attach firebaseUid for convenience
-      req.userId = user.firebaseUid;
+      // Attach uid for convenience
+      req.userId = user.uid;
 
       next(); // Proceed to the next middleware or the controller
     } catch (error) {

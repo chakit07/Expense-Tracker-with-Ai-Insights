@@ -9,9 +9,8 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import AIInsights from "../components/AIInsights";
 import BarChartComponent from "../components/charts/BarChartComponent";
 import LineChartComponent from "../components/charts/LineChartComponent";
 import PieChartComponent from "../components/charts/PieChartComponent";
@@ -65,21 +64,9 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
 
 const Dashboard = () => {
   const { transactions } = useTransactions();
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
   const { theme } = useTheme();
-  const [token, setToken] = useState(null);
   const navigate = useNavigate();
-
-  // Get Firebase token
-  useEffect(() => {
-    const fetchToken = async () => {
-      if (currentUser) {
-        const t = await currentUser.getIdToken();
-        setToken(t);
-      }
-    };
-    fetchToken();
-  }, [currentUser]);
 
   // Stats
   const stats = useMemo(() => {
@@ -546,10 +533,6 @@ const Dashboard = () => {
           )}
         </motion.div>
       </div>
-
-      {/* ✅ AI Insights now only needs token */}
-      {token && <AIInsights token={token} />}
-
       {/* Footer */}
       <Footer />
     </div>

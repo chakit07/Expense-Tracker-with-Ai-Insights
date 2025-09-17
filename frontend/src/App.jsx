@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { TransactionProvider } from "./context/TransactionContext";
+import AIInsightsPage from "./pages/AIInsightsPage";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -89,6 +90,27 @@ function App() {
                           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
                             <div className="container mx-auto px-6 py-8">
                               <Reports />
+                            </div>
+                          </main>
+                        </div>
+                      </div>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ai-insights"
+                  element={
+                    <ProtectedRoute>
+                      <div className="flex h-screen">
+                        <Sidebar
+                          isOpen={sidebarOpen}
+                          onToggle={toggleSidebar}
+                        />
+                        <div className="flex-1 flex flex-col overflow-hidden">
+                          <Navbar onToggleSidebar={toggleSidebar} />
+                          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
+                            <div className="container mx-auto px-6 py-8">
+                              <AIInsightsPage />
                             </div>
                           </main>
                         </div>

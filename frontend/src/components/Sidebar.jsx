@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Brain,
   Home,
   LayoutDashboard,
   Settings,
@@ -15,6 +16,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: "/", icon: Home, label: "Dashboard" },
     { path: "/transactions", icon: Wallet, label: "Transactions" },
     { path: "/reports", icon: BarChart3, label: "Reports" },
+    { path: "/ai-insights", icon: Brain, label: "AI Insights" },
     { path: "/profile", icon: Settings, label: "Profile" },
   ];
 
