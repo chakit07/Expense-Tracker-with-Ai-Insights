@@ -24,19 +24,52 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* Login Card */}
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
-        <div className="text-center mb-8">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden animate-color-fade">
+      {/* Animated Background */}
+      <div className="absolute inset-0 -z-10">
+        <svg
+          className="w-full h-full"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 800 600"
+        >
+          <circle
+            className="animate-float1 fill-indigo-700 opacity-30"
+            cx="100"
+            cy="100"
+            r="80"
+          />
+          <circle
+            className="animate-float2 fill-blue-700 opacity-20"
+            cx="400"
+            cy="300"
+            r="120"
+          />
+          <circle
+            className="animate-float3 fill-indigo-800 opacity-25"
+            cx="700"
+            cy="150"
+            r="100"
+          />
+          <circle
+            className="animate-float4 fill-blue-800 opacity-15"
+            cx="600"
+            cy="500"
+            r="140"
+          />
+        </svg>
+      </div>
+
+      {/* Login Card with drop animation */}
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 drop-animation">
+        <div className="text-center mb-6">
+          {/* Logo or Text Content */}
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png"
+            alt="App Logo"
+            className="mx-auto mb-4 w-20 h-20"
+          />
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
             Expense Tracker
           </h2>
