@@ -1,6 +1,7 @@
+import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { useTransactions } from "../context/TransactionContext";
 
 const TransactionForm = ({ isOpen, onClose, editingTransaction }) => {
@@ -36,7 +37,6 @@ const TransactionForm = ({ isOpen, onClose, editingTransaction }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "type") {
-      // Reset category when type changes
       setFormData((prev) => ({ ...prev, [name]: value, category: "" }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -45,25 +45,37 @@ const TransactionForm = ({ isOpen, onClose, editingTransaction }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.amount || !formData.category) return;
+    const amountValue = parseFloat(formData.amount);
+
+    // ✅ Validation
+    if (!formData.category) {
+      toast.error("Please select a category.");
+      return;
+    }
+    if (isNaN(amountValue) || amountValue <= 0) {
+      toast.error("Amount must be greater than 0.");
+      return;
+    }
 
     setLoading(true);
     try {
       if (editingTransaction) {
         await updateTransaction(editingTransaction._id, {
           ...formData,
-          amount: parseFloat(formData.amount),
+          amount: amountValue,
         });
+        toast.success("Transaction updated successfully!");
       } else {
         await addTransaction({
           ...formData,
-          amount: parseFloat(formData.amount),
+          amount: amountValue,
         });
+        toast.success("Transaction added successfully!");
       }
       onClose();
     } catch (error) {
       console.error("Failed to add transaction:", error);
-      // Optionally show error to user
+      toast.error("Something went wrong while saving transaction.");
     } finally {
       setLoading(false);
     }
