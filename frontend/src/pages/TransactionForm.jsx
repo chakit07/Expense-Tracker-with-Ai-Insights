@@ -3,7 +3,6 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTransactions } from "../context/TransactionContext";
-import toast from "react-hot-toast";
 
 const TransactionForm = ({ isOpen, onClose, editingTransaction }) => {
   const { addTransaction, updateTransaction } = useTransactions();
